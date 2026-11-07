@@ -1,1 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Los 118 Elementos Químicos</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --correct: #16a34a;
+            --incorrect: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .quiz-container {
+            width: 100%;
+            max-width: 640px;
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .quiz-header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .score-badge {
+            background: var(--primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 999px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary), #7c3aed);
+            border-radius: 999px;
+            transition: width 0.3s ease;
+        }
+
+        .question-number {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            line-height: 1.3;
+        }
+
+        .question-text .highlight {
+            color: var(--primary);
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .option-btn {
+            width: 100%;
+            padding: 16px 20px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: translateY(-1px);
+        }
+
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .option-btn.correct {
+            border-color: var(--correct);
+            background: #f0fdf4;
+            color: var(--correct);
+        }
+
+        .option-btn.incorrect {
+            border-color: var(--incorrect);
+            background: #fef2f2;
+            color: var(--incorrect);
+        }
+
+        .option-btn.correct::after {
+            content: ' ✓';
+            font-weight: 700;
+        }
+
+        .option-btn.incorrect::after {
+            content: ' ✗';
+            font-weight: 700;
+        }
+
+        .feedback {
+            min-height: 28px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .feedback.visible {
+            opacity: 1;
+        }
+
+        .feedback.correct {
+            color: var(--correct);
+        }
+
+        .feedback.incorrect {
+            color: var(--incorrect);
+        }
+
+        .btn-next {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-next:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Pantalla de resultados */
+        .results-screen {
+            text-align: center;
+            padding: 20px 0;
+            display: none;
+        }
+
+        .results-screen.active {
+            display: block;
+        }
+
+        .results-screen .emoji {
+            font-size: 4rem;
+            margin-bottom: 16px;
+        }
+
+        .results-screen h2 {
+            font-size: 1.75rem;
+            margin-bottom: 8px;
+        }
+
+        .results-screen .final-score {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 16px 0;
+        }
+
+        .results-screen .message {
+            color: var(--text-light);
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        .btn-restart {
+            padding: 14px 32px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-restart:hover {
+            background: var(--primary-dark);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 480px) {
+            .quiz-container {
+                padding: 20px;
+            }
+            .question-text {
+                font-size: 1.2rem;
+            }
+            .option-btn {
+                padding: 14px 16px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quizContainer">
+    <!-- Cabecera -->
+    <div class="quiz-header">
+        <h1>⚗️ Los 118 Elementos</h1>
+        <div class="score-badge" id="scoreBadge">0 / 0</div>
+    </div>
+
+    <!-- Barra de progreso -->
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <!-- Zona de pregunta -->
+    <div id="quizContent">
+        <div class="question-number" id="questionNumber">Pregunta 1 de 118</div>
+        <div class="question-text" id="questionText"></div>
+        <div class="options" id="optionsContainer"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="btn-next" id="btnNext" disabled>Siguiente →</button>
+    </div>
+
+    <!-- Pantalla de resultados -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="emoji" id="resultsEmoji">🏆</div>
+        <h2>¡Quiz completado!</h2>
+        <div class="final-score" id="finalScore">0 / 118</div>
+        <p class="message" id="resultsMessage"></p>
+        <button class="btn-restart" id="btnRestart">🔄 Volver a intentar</button>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // 1. DATOS: Los 118 elementos (nombre, símbolo, número atómico)
+    // ============================================================
+    const ELEMENTS = [
+        { name: "Hidrógeno", symbol: "H", z: 1 },
+        { name: "Helio", symbol: "He", z: 2 },
+        { name: "Litio", symbol: "Li", z: 3 },
+        { name: "Berilio", symbol: "Be", z: 4 },
+        { name: "Boro", symbol: "B", z: 5 },
+        { name: "Carbono", symbol: "C", z: 6 },
+        { name: "Nitrógeno", symbol: "N", z: 7 },
+        { name: "Oxígeno", symbol: "O", z: 8 },
+        { name: "Flúor", symbol: "F", z: 9 },
+        { name: "Neón", symbol: "Ne", z: 10 },
+        { name: "Sodio", symbol: "Na", z: 11 },
+        { name: "Magnesio", symbol: "Mg", z: 12 },
+        { name: "Aluminio", symbol: "Al", z: 13 },
+        { name: "Silicio", symbol: "Si", z: 14 },
+        { name: "Fósforo", symbol: "P", z: 15 },
+        { name: "Azufre", symbol: "S", z: 16 },
+        { name: "Cloro", symbol: "Cl", z: 17 },
+        { name: "Argón", symbol: "Ar", z: 18 },
+        { name: "Potasio", symbol: "K", z: 19 },
+        { name: "Calcio", symbol: "Ca", z: 20 },
+        { name: "Escandio", symbol: "Sc", z: 21 },
+        { name: "Titanio", symbol: "Ti", z: 22 },
+        { name: "Vanadio", symbol: "V", z: 23 },
+        { name: "Cromo", symbol: "Cr", z: 24 },
+        { name: "Manganeso", symbol: "Mn", z: 25 },
+        { name: "Hierro", symbol: "Fe", z: 26 },
+        { name: "Cobalto", symbol: "Co", z: 27 },
+        { name: "Níquel", symbol: "Ni", z: 28 },
+        { name: "Cobre", symbol: "Cu", z: 29 },
+        { name: "Zinc", symbol: "Zn", z: 30 },
+        { name: "Galio", symbol: "Ga", z: 31 },
+        { name: "Germanio", symbol: "Ge", z: 32 },
+        { name: "Arsénico", symbol: "As", z: 33 },
+        { name: "Selenio", symbol: "Se", z: 34 },
+        { name: "Bromo", symbol: "Br", z: 35 },
+        { name: "Kriptón", symbol: "Kr", z: 36 },
+        { name: "Rubidio", symbol: "Rb", z: 37 },
+        { name: "Estroncio", symbol: "Sr", z: 38 },
+        { name: "Itrio", symbol: "Y", z: 39 },
+        { name: "Zirconio", symbol: "Zr", z: 40 },
+        { name: "Niobio", symbol: "Nb", z: 41 },
+        { name: "Molibdeno", symbol: "Mo", z: 42 },
+        { name: "Tecnecio", symbol: "Tc", z: 43 },
+        { name: "Rutenio", symbol: "Ru", z: 44 },
+        { name: "Rodio", symbol: "Rh", z: 45 },
+        { name: "Paladio", symbol: "Pd", z: 46 },
+        { name: "Plata", symbol: "Ag", z: 47 },
+        { name: "Cadmio", symbol: "Cd", z: 48 },
+        { name: "Indio", symbol: "In", z: 49 },
+        { name: "Estaño", symbol: "Sn", z: 50 },
+        { name: "Antimonio", symbol: "Sb", z: 51 },
+        { name: "Telurio", symbol: "Te", z: 52 },
+        { name: "Yodo", symbol: "I", z: 53 },
+        { name: "Xenón", symbol: "Xe", z: 54 },
+        { name: "Cesio", symbol: "Cs", z: 55 },
+        { name: "Bario", symbol: "Ba", z: 56 },
+        { name: "Lantano", symbol: "La", z: 57 },
+        { name: "Cerio", symbol: "Ce", z: 58 },
+        { name: "Praseodimio", symbol: "Pr", z: 59 },
+        { name: "Neodimio", symbol: "Nd", z: 60 },
+        { name: "Prometio", symbol: "Pm", z: 61 },
+        { name: "Samario", symbol: "Sm", z: 62 },
+        { name: "Europio", symbol: "Eu", z: 63 },
+        { name: "Gadolinio", symbol: "Gd", z: 64 },
+        { name: "Terbio", symbol: "Tb", z: 65 },
+        { name: "Disprosio", symbol: "Dy", z: 66 },
+        { name: "Holmio", symbol: "Ho", z: 67 },
+        { name: "Erbio", symbol: "Er", z: 68 },
+        { name: "Tulio", symbol: "Tm", z: 69 },
+        { name: "Iterbio", symbol: "Yb", z: 70 },
+        { name: "Lutecio", symbol: "Lu", z: 71 },
+        { name: "Hafnio", symbol: "Hf", z: 72 },
+        { name: "Tantalio", symbol: "Ta", z: 73 },
+        { name: "Wolframio", symbol: "W", z: 74 },
+        { name: "Renio", symbol: "Re", z: 75 },
+        { name: "Osmio", symbol: "Os", z: 76 },
+        { name: "Iridio", symbol: "Ir", z: 77 },
+        { name: "Platino", symbol: "Pt", z: 78 },
+        { name: "Oro", symbol: "Au", z: 79 },
+        { name: "Mercurio", symbol: "Hg", z: 80 },
+        { name: "Talio", symbol: "Tl", z: 81 },
+        { name: "Plomo", symbol: "Pb", z: 82 },
+        { name: "Bismuto", symbol: "Bi", z: 83 },
+        { name: "Polonio", symbol: "Po", z: 84 },
+        { name: "Ástato", symbol: "At", z: 85 },
+        { name: "Radón", symbol: "Rn", z: 86 },
+        { name: "Francio", symbol: "Fr", z: 87 },
+        { name: "Radio", symbol: "Ra", z: 88 },
+        { name: "Actinio", symbol: "Ac", z: 89 },
+        { name: "Torio", symbol: "Th", z: 90 },
+        { name: "Protactinio", symbol: "Pa", z: 91 },
+        { name: "Uranio", symbol: "U", z: 92 },
+        { name: "Neptunio", symbol: "Np", z: 93 },
+        { name: "Plutonio", symbol: "Pu", z: 94 },
+        { name: "Americio", symbol: "Am", z: 95 },
+        { name: "Curio", symbol: "Cm", z: 96 },
+        { name: "Berkelio", symbol: "Bk", z: 97 },
+        { name: "Californio", symbol: "Cf", z: 98 },
+        { name: "Einstenio", symbol: "Es", z: 99 },
+        { name: "Fermio", symbol: "Fm", z: 100 },
+        { name: "Mendelevio", symbol: "Md", z: 101 },
+        { name: "Nobelio", symbol: "No", z: 102 },
+        { name: "Laurencio", symbol: "Lr", z: 103 },
+        { name: "Rutherfordio", symbol: "Rf", z: 104 },
+        { name: "Dubnio", symbol: "Db", z: 105 },
+        { name: "Seaborgio", symbol: "Sg", z: 106 },
+        { name: "Bohrio", symbol: "Bh", z: 107 },
+        { name: "Hasio", symbol: "Hs", z: 108 },
+        { name: "Meitnerio", symbol: "Mt", z: 109 },
+        { name: "Darmstadtio", symbol: "Ds", z: 110 },
+        { name: "Roentgenio", symbol: "Rg", z: 111 },
+        { name: "Copernicio", symbol: "Cn", z: 112 },
+        { name: "Nihonio", symbol: "Nh", z: 113 },
+        { name: "Flerovio", symbol: "Fl", z: 114 },
+        { name: "Moscovio", symbol: "Mc", z: 115 },
+        { name: "Livermorio", symbol: "Lv", z: 116 },
+        { name: "Teneso", symbol: "Ts", z: 117 },
+        { name: "Oganesón", symbol: "Og", z: 118 }
+    ];
+
+    // ============================================================
+    // 2. ESTADO DEL QUIZ
+    // ============================================================
+    let currentIndex = 0;          // Índice de la pregunta actual (0 a 117)
+    let score = 0;                 // Respuestas correctas
+    let answered = false;          // Si la pregunta actual ya fue respondida
+    let quizFinished = false;      // Si el quiz terminó
+
+    // Referencias del DOM
+    const dom = {
+        questionNumber: document.getElementById('questionNumber'),
+        questionText: document.getElementById('questionText'),
+        optionsContainer: document.getElementById('optionsContainer'),
+        feedback: document.getElementById('feedback'),
+        btnNext: document.getElementById('btnNext'),
+        progressFill: document.getElementById('progressFill'),
+        scoreBadge: document.getElementById('scoreBadge'),
+        quizContent: document.getElementById('quizContent'),
+        resultsScreen: document.getElementById('resultsScreen'),
+        finalScore: document.getElementById('finalScore'),
+        resultsMessage: document.getElementById('resultsMessage'),
+        resultsEmoji: document.getElementById('resultsEmoji'),
+        btnRestart: document.getElementById('btnRestart')
+    };
+
+    // ============================================================
+    // 3. UTILIDADES
+    // ============================================================
+    function shuffle(array) {
+        const copy = [...array];
+        for (let i = copy.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+    }
+
+    /**
+     * Genera 3 distractores aleatorios del mismo tipo (símbolo o nombre)
+     * que el elemento correcto, excluyendo el elemento actual.
+     */
+    function getDistractors(correctElement, type) {
+        const pool = ELEMENTS.filter(el => el.symbol !== correctElement.symbol);
+        const shuffled = shuffle(pool);
+        const distractors = shuffled.slice(0, 3).map(el => type === 'symbol' ? el.symbol : el.name);
+        // Si por alguna razón hay menos de 3 (no debería), rellenamos con genéricos
+        while (distractors.length < 3) {
+            distractors.push(type === 'symbol' ? '??' : 'Desconocido');
+        }
+        return distractors;
+    }
+
+    /**
+     * Genera una pregunta para el elemento en el índice dado.
+     * Alterna el tipo de pregunta: símbolo → nombre, nombre → símbolo.
+     */
+    function generateQuestion(index) {
+        const element = ELEMENTS[index];
+        // Alternar tipo de pregunta según el índice (par: símbolo; impar: nombre)
+        const askForSymbol = index % 2 === 0;
+
+        let questionTextHTML;
+        let correctAnswer;
+        let options;
+
+        if (askForSymbol) {
+            // Pregunta: ¿Cuál es el símbolo del [Nombre]?
+            questionTextHTML = `¿Cuál es el símbolo del <span class="highlight">${element.name}</span>?`;
+            correctAnswer = element.symbol;
+            const distractors = getDistractors(element, 'symbol');
+            options = shuffle([correctAnswer, ...distractors]);
+        } else {
+            // Pregunta: ¿Cuál es el nombre del elemento con símbolo [Símbolo]?
+            questionTextHTML = `¿Cuál es el nombre del elemento con símbolo <span class="highlight">${element.symbol}</span>?`;
+            correctAnswer = element.name;
+            const distractors = getDistractors(element, 'name');
+            options = shuffle([correctAnswer, ...distractors]);
+        }
+
+        return { element, askForSymbol, questionTextHTML, correctAnswer, options };
+    }
+
+    // ============================================================
+    // 4. RENDERIZADO
+    // ============================================================
+    function renderQuestion() {
+        answered = false;
+        dom.feedback.textContent = '';
+        dom.feedback.className = 'feedback';
+        dom.btnNext.disabled = true;
+
+        const q = generateQuestion(currentIndex);
+        const total = ELEMENTS.length;
+
+        // Número de pregunta
+        dom.questionNumber.textContent = `Pregunta ${currentIndex + 1} de ${total}`;
+
+        // Texto de la pregunta
+        dom.questionText.innerHTML = q.questionTextHTML;
+
+        // Opciones
+        dom.optionsContainer.innerHTML = '';
+        q.options.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.textContent = option;
+            btn.dataset.value = option;
+            btn.addEventListener('click', () => handleAnswer(btn, option, q.correctAnswer));
+            dom.optionsContainer.appendChild(btn);
+        });
+
+        // Actualizar barra de progreso
+        const progress = ((currentIndex) / total) * 100;
+        dom.progressFill.style.width = `${progress}%`;
+
+        // Actualizar badge de puntuación
+        dom.scoreBadge.textContent = `${score} / ${currentIndex}`;
+    }
+
+    // ============================================================
+    // 5. LÓGICA DE RESPUESTA
+    // ============================================================
+    function handleAnswer(selectedBtn, selectedValue, correctAnswer) {
+        if (answered) return; // Evitar doble respuesta
+        answered = true;
+
+        const allButtons = dom.optionsContainer.querySelectorAll('.option-btn');
+        allButtons.forEach(btn => {
+            btn.disabled = true;
+            if (btn.dataset.value === correctAnswer) {
+                btn.classList.add('correct');
+            }
+        });
+
+        const isCorrect = selectedValue === correctAnswer;
+
+        if (isCorrect) {
+            score++;
+            dom.feedback.textContent = '✅ ¡Correcto!';
+            dom.feedback.className = 'feedback visible correct';
+        } else {
+            selectedBtn.classList.add('incorrect');
+            dom.feedback.textContent = `❌ Incorrecto. La respuesta correcta era: ${correctAnswer}`;
+            dom.feedback.className = 'feedback visible incorrect';
+        }
+
+        // Actualizar badge
+        
