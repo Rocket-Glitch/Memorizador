@@ -1,8 +1,5 @@
 <script>
-
-        // 1. BASE DE DATOS DE ELEMENTOS
-
-        const elementos = [
+const elementos = [
             ["Hidrógeno", "H"],
             ["Helio", "He"],
             ["Litio", "Li"],
