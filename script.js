@@ -370,10 +370,7 @@ const elementos = [
         }
 
 
-        // 12. MOSTRAR EL RÉCORD GUARDADO
-
-        buscar("record").textContent =
-            localStorage.getItem("mejorPuntuacion") || 0;
+        
 
 
         // 13. INICIAR EL JUEGO
