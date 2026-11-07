@@ -3,413 +3,128 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark">
-<meta name="theme-color" content="#000000">
-
-    <title>Cluster 11</title>
+<title>Cuestionario de química</title>
 </head>
 
 <body>
 
-    <p id="pregunta">Preparando pregunta...</p>
+<h2 id="pregunta"></h2>
 
-    <div id="opciones"></div>
+<div id="opciones"></div>
 
-    <p id="resultado"></p>
+<p id="resultado"></p>
 
-    
-
-    <button id="siguiente" onclick="siguientePregunta()" disabled>
-        Siguiente pregunta
-    </button>
-
-<button onclick="reiniciar()">Reiniciar
-</button>
-
-    <h3>Mejor puntuación: <span id="record">0</span></h3>
+<button id="siguiente" hidden>Siguiente pregunta</button>
 
 <script>
-const elementos = [
-            ["Hidrógeno", "H"],
-            ["Helio", "He"],
-            ["Litio", "Li"],
-            ["Berilio", "Be"],
-            ["Boro", "B"],
-            ["Carbono", "C"],
-            ["Nitrógeno", "N"],
-            ["Oxígeno", "O"],
-            ["Flúor", "F"],
-            ["Neón", "Ne"],
-            ["Sodio", "Na"],
-            ["Magnesio", "Mg"],
-            ["Aluminio", "Al"],
-            ["Silicio", "Si"],
-            ["Fósforo", "P"],
-            ["Azufre", "S"],
-            ["Cloro", "Cl"],
-            ["Argón", "Ar"],
-            ["Potasio", "K"],
-            ["Calcio", "Ca"],
-            ["Escandio", "Sc"],
-            ["Titanio", "Ti"],
-            ["Vanadio", "V"],
-            ["Cromo", "Cr"],
-            ["Manganeso", "Mn"],
-            ["Hierro", "Fe"],
-            ["Cobalto", "Co"],
-            ["Níquel", "Ni"],
-            ["Cobre", "Cu"],
-            ["Zinc", "Zn"],
-            ["Galio", "Ga"],
-            ["Germanio", "Ge"],
-            ["Arsénico", "As"],
-            ["Selenio", "Se"],
-            ["Bromo", "Br"],
-            ["Kriptón", "Kr"],
-            ["Rubidio", "Rb"],
-            ["Estroncio", "Sr"],
-            ["Itrio", "Y"],
-            ["Zirconio", "Zr"],
-            ["Niobio", "Nb"],
-            ["Molibdeno", "Mo"],
-            ["Tecnecio", "Tc"],
-            ["Rutenio", "Ru"],
-            ["Rodio", "Rh"],
-            ["Paladio", "Pd"],
-            ["Plata", "Ag"],
-            ["Cadmio", "Cd"],
-            ["Indio", "In"],
-            ["Estaño", "Sn"],
-            ["Antimonio", "Sb"],
-            ["Telurio", "Te"],
-            ["Yodo", "I"],
-            ["Xenón", "Xe"],
-            ["Cesio", "Cs"],
-            ["Bario", "Ba"],
-            ["Lantano", "La"],
-            ["Cerio", "Ce"],
-            ["Praseodimio", "Pr"],
-            ["Neodimio", "Nd"],
-            ["Prometio", "Pm"],
-            ["Samario", "Sm"],
-            ["Europio", "Eu"],
-            ["Gadolinio", "Gd"],
-            ["Terbio", "Tb"],
-            ["Disprosio", "Dy"],
-            ["Holmio", "Ho"],
-            ["Erbio", "Er"],
-            ["Tulio", "Tm"],
-            ["Iterbio", "Yb"],
-            ["Lutecio", "Lu"],
-            ["Hafnio", "Hf"],
-            ["Tantalio", "Ta"],
-            ["Wolframio", "W"],
-            ["Renio", "Re"],
-            ["Osmio", "Os"],
-            ["Iridio", "Ir"],
-            ["Platino", "Pt"],
-            ["Oro", "Au"],
-            ["Mercurio", "Hg"],
-            ["Talio", "Tl"],
-            ["Plomo", "Pb"],
-            ["Bismuto", "Bi"],
-            ["Polonio", "Po"],
-            ["Ástato", "At"],
-            ["Radón", "Rn"],
-            ["Francio", "Fr"],
-            ["Radio", "Ra"],
-            ["Actinio", "Ac"],
-            ["Torio", "Th"],
-            ["Protactinio", "Pa"],
-            ["Uranio", "U"],
-            ["Neptunio", "Np"],
-            ["Plutonio", "Pu"],
-            ["Americio", "Am"],
-            ["Curio", "Cm"],
-            ["Berkelio", "Bk"],
-            ["Californio", "Cf"],
-            ["Einstenio", "Es"],
-            ["Fermio", "Fm"],
-            ["Mendelevio", "Md"],
-            ["Nobelio", "No"],
-            ["Laurencio", "Lr"],
-            ["Rutherfordio", "Rf"],
-            ["Dubnio", "Db"],
-            ["Seaborgio", "Sg"],
-            ["Bohrio", "Bh"],
-            ["Hasio", "Hs"],
-            ["Meitnerio", "Mt"],
-            ["Darmstadtio", "Ds"],
-            ["Roentgenio", "Rg"],
-            ["Copernicio", "Cn"],
-            ["Nihonio", "Nh"],
-            ["Flerovio", "Fl"],
-            ["Moscovio", "Mc"],
-            ["Livermorio", "Lv"],
-            ["Teneso", "Ts"],
-            ["Oganesón", "Og"]
-        ];
 
+const elementos = `
+Hidrógeno, Helio, Litio, Berilio, Boro, Carbono,
+Nitrógeno, Oxígeno, Flúor, Neón, Sodio, Magnesio,
+Aluminio, Silicio, Fósforo, Azufre, Cloro, Argón,
+Potasio, Calcio, Escandio, Titanio, Vanadio, Cromo,
+Manganeso, Hierro, Cobalto, Níquel, Cobre, Zinc,
+Galio, Germanio, Arsénico, Selenio, Bromo, Kriptón,
+Rubidio, Estroncio, Itrio, Zirconio, Niobio, Molibdeno,
+Tecnecio, Rutenio, Rodio, Paladio, Plata, Cadmio,
+Indio, Estaño, Antimonio, Telurio, Yodo, Xenón,
+Cesio, Bario, Lantano, Cerio, Praseodimio, Neodimio,
+Prometio, Samario, Europio, Gadolinio, Terbio, Disprosio,
+Holmio, Erbio, Tulio, Iterbio, Lutecio, Hafnio,
+Tantalio, Wolframio, Renio, Osmio, Iridio, Platino,
+Oro, Mercurio, Talio, Plomo, Bismuto, Polonio,
+Ástato, Radón, Francio, Radio, Actinio, Torio,
+Protactinio, Uranio, Neptunio, Plutonio, Americio, Curio,
+Berkelio, Californio, Einstenio, Fermio, Mendelevio, Nobelio,
+Laurencio, Rutherfordio, Dubnio, Seaborgio, Bohrio, Hasio,
+Meitnerio, Darmstadtio, Roentgenio, Copernicio, Nihonio,
+Flerovio, Moscovio, Livermorio, Teneso, Oganesón
+`.split(",").map(e => e.trim());
 
-        // 2. VARIABLES DEL JUEGO
+let orden = [];
+let actual;
+let correcta;
 
-        let puntos = 0;
+function mezclar(lista) {
+    let copia = [...lista];
 
-        let numeroPregunta = 0;
+    for (let i = copia.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
 
-        let respuestaCorrecta = "";
+    return copia;
+}
 
-        let preguntas = [];
+function nuevaPregunta() {
 
+    if (orden.length === 0) {
+        orden = mezclar(elementos.map((nombre, i) => ({
+            nombre,
+            numero: i + 1
+        })));
+    }
 
-        // 3. OBTENER UN ELEMENTO HTML
+    actual = orden.pop();
 
-        function buscar(id) {
+    let preguntarElemento = Math.random() < 0.5;
 
-            return document.getElementById(id);
+    correcta = preguntarElemento
+        ? actual.nombre
+        : String(actual.numero);
 
-        }
+    document.getElementById("pregunta").textContent =
+        preguntarElemento
+        ? `¿Qué elemento tiene el número atómico ${actual.numero}?`
+        : `¿Cuál es el número atómico del ${actual.nombre}?`;
 
+    document.getElementById("resultado").textContent = "";
 
-        // 4. MEZCLAR LOS ELEMENTOS
+    document.getElementById("siguiente").hidden = true;
 
-        function mezclar(lista) {
+    let distractores = elementos
+        .map((nombre, i) => preguntarElemento ? nombre : String(i + 1))
+        .filter(opcion => opcion !== correcta);
 
-            let copia = [...lista];
+    let opciones = mezclar([
+        correcta,
+        ...mezclar(distractores).slice(0, 4)
+    ]);
 
-            for (let i = copia.length - 1; i > 0; i--) {
+    let contenedor = document.getElementById("opciones");
+    contenedor.innerHTML = "";
 
-                let j = Math.floor(Math.random() * (i + 1));
+    opciones.forEach(opcion => {
 
-                [copia[i], copia[j]] = [copia[j], copia[i]];
+        let boton = document.createElement("button");
 
-            }
+        boton.textContent = opcion;
 
-            return copia;
+        boton.onclick = () => comprobar(opcion);
 
-        }
+        contenedor.appendChild(boton);
+    });
+}
 
+function comprobar(respuesta) {
 
-        // 5. PREPARAR LAS PREGUNTAS
+    document.querySelectorAll("#opciones button").forEach(boton => {
+        boton.disabled = true;
+    });
 
-        function prepararJuego() {
+    document.getElementById("resultado").textContent =
+        respuesta === correcta
+        ? "¡Correcto! 🎉"
+        : `Incorrecto. La respuesta era ${correcta}.`;
 
-            preguntas = mezclar(elementos);
+    document.getElementById("siguiente").hidden = false;
+}
 
-            numeroPregunta = 0;
+document.getElementById("siguiente").onclick = nuevaPregunta;
 
-            puntos = 0;
+nuevaPregunta();
 
-            mostrarPregunta();
-
-        }
-
-
-        // 6. MOSTRAR UNA PREGUNTA
-
-        function mostrarPregunta() {
-
-            let elemento = preguntas[numeroPregunta];
-
-            let preguntarSimbolo = Math.random() < 0.5;
-
-            let pregunta;
-
-            if (preguntarSimbolo) {
-
-                pregunta = "¿Cuál es el símbolo de " + elemento[0] + "?";
-
-                respuestaCorrecta = elemento[1];
-
-            } else {
-
-                pregunta = "¿Qué elemento tiene el símbolo " + elemento[1] + "?";
-
-                respuestaCorrecta = elemento[0];
-
-            }
-
-            buscar("pregunta").textContent = pregunta;
-
-            buscar("resultado").textContent = "";
-
-            buscar("siguiente").disabled = true;
-
-            buscar("numero").textContent = numeroPregunta + 1;
-
-            buscar("puntos").textContent = puntos;
-
-            buscar("opciones").innerHTML = "";
-
-
-            // Crear cuatro respuestas
-
-            let otrasRespuestas = mezclar(
-
-                elementos.filter(e => e !== elemento)
-
-            ).slice(0, 3);
-
-
-            let opciones = [elemento, ...otrasRespuestas];
-
-
-            opciones = mezclar(opciones);
-
-
-            opciones.forEach(function(e) {
-
-                let respuesta = preguntarSimbolo ? e[1] : e[0];
-
-                let boton = document.createElement("button");
-
-                boton.textContent = respuesta;
-
-                boton.onclick = function() {
-
-                    comprobarRespuesta(respuesta);
-
-                };
-
-                buscar("opciones").appendChild(boton);
-
-            });
-
-
-            actualizarPrecision();
-
-        }
-
-
-        // 7. COMPROBAR LA RESPUESTA
-
-        function comprobarRespuesta(respuesta) {
-
-            let botones = buscar("opciones").children;
-
-            for (let boton of botones) {
-
-                boton.disabled = true;
-
-            }
-
-            if (respuesta === respuestaCorrecta) {
-
-                puntos++;
-
-                buscar("resultado").textContent = "¡Correcto! 🎉";
-
-            } else {
-
-                buscar("resultado").textContent =
-                    "Incorrecto. La respuesta era: " + respuestaCorrecta;
-
-            }
-
-            buscar("puntos").textContent = puntos;
-
-            buscar("siguiente").disabled = false;
-
-            actualizarPrecision();
-
-        }
-
-
-        // 8. CALCULAR LA PRECISIÓN
-
-        function actualizarPrecision() {
-
-            let respondidas = numeroPregunta;
-
-            if (buscar("siguiente").disabled === false) {
-
-                respondidas++;
-
-            }
-
-            let precision = 0;
-
-            if (respondidas > 0) {
-
-                precision = Math.round(
-                    (puntos / respondidas) * 100
-                );
-
-            }
-
-            buscar("precision").textContent = precision;
-
-        }
-
-
-        // 9. SIGUIENTE PREGUNTA
-
-        function siguientePregunta() {
-
-            numeroPregunta++;
-
-            if (numeroPregunta < preguntas.length) {
-
-                mostrarPregunta();
-
-            } else {
-
-                terminarJuego();
-
-            }
-
-        }
-
-
-        // 10. TERMINAR EL JUEGO
-
-        function terminarJuego() {
-
-            buscar("pregunta").textContent = "¡Cuestionario terminado!";
-
-            buscar("opciones").innerHTML = "";
-
-            buscar("resultado").textContent =
-                "Conseguiste " + puntos + " puntos de 118.";
-
-            buscar("siguiente").disabled = true;
-
-            let record = Number(
-                localStorage.getItem("mejorPuntuacion") || 0
-            );
-
-            if (puntos > record) {
-
-                record = puntos;
-
-                localStorage.setItem("mejorPuntuacion", record);
-
-            }
-
-            buscar("record").textContent = record;
-
-        }
-
-
-        // 11. REINICIAR EL JUEGO
-
-        function reiniciar() {
-
-            prepararJuego();
-
-        }
-
-
-
-
-
-        // 13. INICIAR EL JUEGO
-
-        prepararJuego();
-
-
-    </script>
-    
+</script>
 
 </body>
 </html>
