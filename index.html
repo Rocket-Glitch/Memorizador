@@ -1,42 +1,158 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cuestionario de química</title>
+
+<title>Quiz de la Tabla Periódica</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #eef2f7;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .contenedor {
+        background: white;
+        max-width: 550px;
+        margin: 30px auto;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px #0002;
+    }
+
+    h1 {
+        color: #263b64;
+    }
+
+    #pregunta {
+        margin: 25px 0;
+        color: #222;
+    }
+
+    #opciones {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    #opciones button {
+        padding: 14px;
+        border: 2px solid #d5dce8;
+        border-radius: 9px;
+        background: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #opciones button:hover:not(:disabled) {
+        background: #e6edff;
+    }
+
+    #opciones button:disabled {
+        cursor: not-allowed;
+    }
+
+    .correcta {
+        background: #28a745 !important;
+        color: white;
+        border-color: #28a745 !important;
+    }
+
+    .incorrecta {
+        background: #dc3545 !important;
+        color: white;
+        border-color: #dc3545 !important;
+    }
+
+    #siguiente {
+        margin-top: 20px;
+        padding: 12px 25px;
+        background: #263b64;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    #resultado {
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    .puntos {
+        color: #263b64;
+        font-weight: bold;
+    }
+</style>
 </head>
 
 <body>
 
-<h2 id="pregunta"></h2>
+<div class="contenedor">
 
-<div id="opciones"></div>
+    <h1>🧪 Quiz de Química</h1>
 
-<p id="resultado"></p>
+    <p class="puntos" id="progreso"></p>
 
-<button id="siguiente" hidden>Siguiente pregunta</button>
+    <p class="puntos" id="puntos">Puntos: 0</p>
+
+    <h2 id="pregunta"></h2>
+
+    <div id="opciones"></div>
+
+    <p id="resultado"></p>
+
+    <button id="siguiente" hidden>
+        Siguiente pregunta
+    </button>
+
+</div>
 
 <script>
 
 const elementos = `
-Hidrógeno, Helio, Litio, Berilio, Boro, Carbono, Nitrógeno, Oxígeno, Flúor, Neón, Sodio, Magnesio, Aluminio, Silicio, Fósforo, Azufre, Cloro, Argón, Potasio, Calcio, Escandio, Titanio, Vanadio, Cromo,
-Manganeso, Hierro, Cobalto, Níquel, Cobre, Zinc, Galio, Germanio, Arsénico, Selenio, Bromo, Kriptón, Rubidio, Estroncio, Itrio, Zirconio, Niobio, Molibdeno,
-Tecnecio, Rutenio, Rodio, Paladio, Plata, Cadmio, Indio, Estaño, Antimonio, Telurio, Yodo, Xenón, Cesio, Bario, Lantano, Cerio, Praseodimio, Neodimio, Prometio, Samario, Europio, Gadolinio, Terbio, Disprosio,
-Holmio, Erbio, Tulio, Iterbio, Lutecio, Hafnio, Tantalio, Wolframio, Renio, Osmio, Iridio, Platino, Oro, Mercurio, Talio, Plomo, Bismuto, Polonio, Ástato, Radón, Francio, Radio, Actinio, Torio,
-Protactinio, Uranio, Neptunio, Plutonio, Americio, Curio, Berkelio, Californio, Einstenio, Fermio, Mendelevio, Nobelio,
-Laurencio, Rutherfordio, Dubnio, Seaborgio, Bohrio, Hasio, Meitnerio, Darmstadtio, Roentgenio, Copernicio, Nihonio,
-Flerovio, Moscovio, Livermorio, Teneso, Oganesón
+Hidrógeno, Helio, Litio, Berilio, Boro, Carbono,
+Nitrógeno, Oxígeno, Flúor, Neón, Sodio, Magnesio,
+Aluminio, Silicio, Fósforo, Azufre, Cloro, Argón,
+Potasio, Calcio, Escandio, Titanio, Vanadio, Cromo,
+Manganeso, Hierro, Cobalto, Níquel, Cobre, Zinc,
+Galio, Germanio, Arsénico, Selenio, Bromo, Kriptón,
+Rubidio, Estroncio, Itrio, Zirconio, Niobio, Molibdeno,
+Tecnecio, Rutenio, Rodio, Paladio, Plata, Cadmio,
+Indio, Estaño, Antimonio, Telurio, Yodo, Xenón,
+Cesio, Bario, Lantano, Cerio, Praseodimio, Neodimio,
+Prometio, Samario, Europio, Gadolinio, Terbio, Disprosio,
+Holmio, Erbio, Tulio, Iterbio, Lutecio, Hafnio,
+Tantalio, Wolframio, Renio, Osmio, Iridio, Platino,
+Oro, Mercurio, Talio, Plomo, Bismuto, Polonio,
+Ástato, Radón, Francio, Radio, Actinio, Torio,
+Protactinio, Uranio, Neptunio, Plutonio, Americio,
+Curio, Berkelio, Californio, Einstenio, Fermio,
+Mendelevio, Nobelio, Laurencio, Rutherfordio, Dubnio,
+Seaborgio, Bohrio, Hasio, Meitnerio, Darmstadtio,
+Roentgenio, Copernicio, Nihonio, Flerovio, Moscovio,
+Livermorio, Teneso, Oganesón
 `.split(",").map(e => e.trim());
 
 let orden = [];
 let actual;
 let correcta;
+let puntos = 0;
+let numeroPregunta = 0;
 
 function mezclar(lista) {
+
     let copia = [...lista];
 
     for (let i = copia.length - 1; i > 0; i--) {
+
         let j = Math.floor(Math.random() * (i + 1));
+
         [copia[i], copia[j]] = [copia[j], copia[i]];
     }
 
@@ -46,13 +162,13 @@ function mezclar(lista) {
 function nuevaPregunta() {
 
     if (orden.length === 0) {
-        orden = mezclar(elementos.map((nombre, i) => ({
-            nombre,
-            numero: i + 1
-        })));
+        finalizarQuiz();
+        return;
     }
 
     actual = orden.pop();
+
+    numeroPregunta++;
 
     let preguntarElemento = Math.random() < 0.5;
 
@@ -69,8 +185,13 @@ function nuevaPregunta() {
 
     document.getElementById("siguiente").hidden = true;
 
+    document.getElementById("progreso").textContent =
+        `Pregunta ${numeroPregunta} de 118`;
+
     let distractores = elementos
-        .map((nombre, i) => preguntarElemento ? nombre : String(i + 1))
+        .map((nombre, i) =>
+            preguntarElemento ? nombre : String(i + 1)
+        )
         .filter(opcion => opcion !== correcta);
 
     let opciones = mezclar([
@@ -79,6 +200,7 @@ function nuevaPregunta() {
     ]);
 
     let contenedor = document.getElementById("opciones");
+
     contenedor.innerHTML = "";
 
     opciones.forEach(opcion => {
@@ -87,27 +209,93 @@ function nuevaPregunta() {
 
         boton.textContent = opcion;
 
-        boton.onclick = () => comprobar(opcion);
+        boton.onclick = () => comprobar(opcion, boton);
 
         contenedor.appendChild(boton);
     });
 }
 
-function comprobar(respuesta) {
+function comprobar(respuesta, botonElegido) {
 
-    document.querySelectorAll("#opciones button").forEach(boton => {
+    let botones = document.querySelectorAll("#opciones button");
+
+    botones.forEach(boton => {
+
         boton.disabled = true;
+
+        if (boton.textContent === correcta) {
+            boton.classList.add("correcta");
+        }
     });
 
-    document.getElementById("resultado").textContent =
-        respuesta === correcta
-        ? "¡Correcto! 🎉"
-        : `Incorrecto. La respuesta era ${correcta}.`;
+    if (respuesta === correcta) {
+
+        puntos++;
+
+        document.getElementById("resultado").textContent =
+            "¡Correcto! 🎉";
+
+    } else {
+
+        botonElegido.classList.add("incorrecta");
+
+        document.getElementById("resultado").textContent =
+            `Incorrecto. La respuesta era ${correcta}.`;
+    }
+
+    document.getElementById("puntos").textContent =
+        `Puntos: ${puntos}`;
 
     document.getElementById("siguiente").hidden = false;
 }
 
+function finalizarQuiz() {
+
+    document.getElementById("pregunta").textContent =
+        "¡Cuestionario terminado! 🏆";
+
+    document.getElementById("opciones").innerHTML = "";
+
+    document.getElementById("resultado").textContent =
+        `Tu puntuación final es ${puntos} de 118.`;
+
+    document.getElementById("progreso").textContent =
+        "Has completado los 118 elementos.";
+
+    document.getElementById("siguiente").textContent =
+        "Volver a jugar";
+
+    document.getElementById("siguiente").hidden = false;
+
+    document.getElementById("siguiente").onclick = reiniciar;
+}
+
+function reiniciar() {
+
+    puntos = 0;
+    numeroPregunta = 0;
+
+    document.getElementById("puntos").textContent = "Puntos: 0";
+
+    document.getElementById("siguiente").textContent =
+        "Siguiente pregunta";
+
+    document.getElementById("siguiente").onclick = nuevaPregunta;
+
+    orden = mezclar(elementos.map((nombre, i) => ({
+        nombre,
+        numero: i + 1
+    })));
+
+    nuevaPregunta();
+}
+
 document.getElementById("siguiente").onclick = nuevaPregunta;
+
+orden = mezclar(elementos.map((nombre, i) => ({
+    nombre,
+    numero: i + 1
+})));
 
 nuevaPregunta();
 
