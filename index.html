@@ -2,104 +2,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Quiz de la Tabla Periódica</title>
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #eef2f7;
-        text-align: center;
-        padding: 20px;
-    }
-
-    .contenedor {
-        background: white;
-        max-width: 550px;
-        margin: 30px auto;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px #0002;
-    }
-
-    h1 {
-        color: #263b64;
-    }
-
-    #pregunta {
-        margin: 25px 0;
-        color: #222;
-    }
-
-    #opciones {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    #opciones button {
-        padding: 14px;
-        border: 2px solid #d5dce8;
-        border-radius: 9px;
-        background: white;
-        font-size: 16px;
-        cursor: pointer;
-    }
-
-    #opciones button:hover:not(:disabled) {
-        background: #e6edff;
-    }
-
-    #opciones button:disabled {
-        cursor: not-allowed;
-    }
-
-    .correcta {
-        background: #28a745 !important;
-        color: white;
-        border-color: #28a745 !important;
-    }
-
-    .incorrecta {
-        background: #dc3545 !important;
-        color: white;
-        border-color: #dc3545 !important;
-    }
-
-    #siguiente {
-        margin-top: 20px;
-        padding: 12px 25px;
-        background: #263b64;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-    }
-
-    #resultado {
-        font-weight: bold;
-        margin-top: 20px;
-    }
-
-    .puntos {
-        color: #263b64;
-        font-weight: bold;
-    }
-</style>
+    <meta charset="UTF-8">
+    <title>Quiz de química</title>
 </head>
 
 <body>
 
-<div class="contenedor">
+    <h1>Quiz de la tabla periódica</h1>
 
-    <h1>🧪 Quiz de Química</h1>
+    <p id="progreso"></p>
 
-    <p class="puntos" id="progreso"></p>
-
-    <p class="puntos" id="puntos">Puntos: 0</p>
+    <p id="puntos">Puntos: 0</p>
 
     <h2 id="pregunta"></h2>
 
@@ -111,39 +24,140 @@
         Siguiente pregunta
     </button>
 
-</div>
-
 <script>
 
-const elementos = `
-Hidrógeno, Helio, Litio, Berilio, Boro, Carbono,
-Nitrógeno, Oxígeno, Flúor, Neón, Sodio, Magnesio,
-Aluminio, Silicio, Fósforo, Azufre, Cloro, Argón,
-Potasio, Calcio, Escandio, Titanio, Vanadio, Cromo,
-Manganeso, Hierro, Cobalto, Níquel, Cobre, Zinc,
-Galio, Germanio, Arsénico, Selenio, Bromo, Kriptón,
-Rubidio, Estroncio, Itrio, Zirconio, Niobio, Molibdeno,
-Tecnecio, Rutenio, Rodio, Paladio, Plata, Cadmio,
-Indio, Estaño, Antimonio, Telurio, Yodo, Xenón,
-Cesio, Bario, Lantano, Cerio, Praseodimio, Neodimio,
-Prometio, Samario, Europio, Gadolinio, Terbio, Disprosio,
-Holmio, Erbio, Tulio, Iterbio, Lutecio, Hafnio,
-Tantalio, Wolframio, Renio, Osmio, Iridio, Platino,
-Oro, Mercurio, Talio, Plomo, Bismuto, Polonio,
-Ástato, Radón, Francio, Radio, Actinio, Torio,
-Protactinio, Uranio, Neptunio, Plutonio, Americio,
-Curio, Berkelio, Californio, Einstenio, Fermio,
-Mendelevio, Nobelio, Laurencio, Rutherfordio, Dubnio,
-Seaborgio, Bohrio, Hasio, Meitnerio, Darmstadtio,
-Roentgenio, Copernicio, Nihonio, Flerovio, Moscovio,
-Livermorio, Teneso, Oganesón
-`.split(",").map(e => e.trim());
+// 1. LISTA DE LOS 118 ELEMENTOS
+
+const elementos = [
+    {numero:1, nombre:"Hidrógeno", simbolo:"H"},
+    {numero:2, nombre:"Helio", simbolo:"He"},
+    {numero:3, nombre:"Litio", simbolo:"Li"},
+    {numero:4, nombre:"Berilio", simbolo:"Be"},
+    {numero:5, nombre:"Boro", simbolo:"B"},
+    {numero:6, nombre:"Carbono", simbolo:"C"},
+    {numero:7, nombre:"Nitrógeno", simbolo:"N"},
+    {numero:8, nombre:"Oxígeno", simbolo:"O"},
+    {numero:9, nombre:"Flúor", simbolo:"F"},
+    {numero:10, nombre:"Neón", simbolo:"Ne"},
+    {numero:11, nombre:"Sodio", simbolo:"Na"},
+    {numero:12, nombre:"Magnesio", simbolo:"Mg"},
+    {numero:13, nombre:"Aluminio", simbolo:"Al"},
+    {numero:14, nombre:"Silicio", simbolo:"Si"},
+    {numero:15, nombre:"Fósforo", simbolo:"P"},
+    {numero:16, nombre:"Azufre", simbolo:"S"},
+    {numero:17, nombre:"Cloro", simbolo:"Cl"},
+    {numero:18, nombre:"Argón", simbolo:"Ar"},
+    {numero:19, nombre:"Potasio", simbolo:"K"},
+    {numero:20, nombre:"Calcio", simbolo:"Ca"},
+    {numero:21, nombre:"Escandio", simbolo:"Sc"},
+    {numero:22, nombre:"Titanio", simbolo:"Ti"},
+    {numero:23, nombre:"Vanadio", simbolo:"V"},
+    {numero:24, nombre:"Cromo", simbolo:"Cr"},
+    {numero:25, nombre:"Manganeso", simbolo:"Mn"},
+    {numero:26, nombre:"Hierro", simbolo:"Fe"},
+    {numero:27, nombre:"Cobalto", simbolo:"Co"},
+    {numero:28, nombre:"Níquel", simbolo:"Ni"},
+    {numero:29, nombre:"Cobre", simbolo:"Cu"},
+    {numero:30, nombre:"Zinc", simbolo:"Zn"},
+    {numero:31, nombre:"Galio", simbolo:"Ga"},
+    {numero:32, nombre:"Germanio", simbolo:"Ge"},
+    {numero:33, nombre:"Arsénico", simbolo:"As"},
+    {numero:34, nombre:"Selenio", simbolo:"Se"},
+    {numero:35, nombre:"Bromo", simbolo:"Br"},
+    {numero:36, nombre:"Kriptón", simbolo:"Kr"},
+    {numero:37, nombre:"Rubidio", simbolo:"Rb"},
+    {numero:38, nombre:"Estroncio", simbolo:"Sr"},
+    {numero:39, nombre:"Itrio", simbolo:"Y"},
+    {numero:40, nombre:"Zirconio", simbolo:"Zr"},
+    {numero:41, nombre:"Niobio", simbolo:"Nb"},
+    {numero:42, nombre:"Molibdeno", simbolo:"Mo"},
+    {numero:43, nombre:"Tecnecio", simbolo:"Tc"},
+    {numero:44, nombre:"Rutenio", simbolo:"Ru"},
+    {numero:45, nombre:"Rodio", simbolo:"Rh"},
+    {numero:46, nombre:"Paladio", simbolo:"Pd"},
+    {numero:47, nombre:"Plata", simbolo:"Ag"},
+    {numero:48, nombre:"Cadmio", simbolo:"Cd"},
+    {numero:49, nombre:"Indio", simbolo:"In"},
+    {numero:50, nombre:"Estaño", simbolo:"Sn"},
+    {numero:51, nombre:"Antimonio", simbolo:"Sb"},
+    {numero:52, nombre:"Telurio", simbolo:"Te"},
+    {numero:53, nombre:"Yodo", simbolo:"I"},
+    {numero:54, nombre:"Xenón", simbolo:"Xe"},
+    {numero:55, nombre:"Cesio", simbolo:"Cs"},
+    {numero:56, nombre:"Bario", simbolo:"Ba"},
+    {numero:57, nombre:"Lantano", simbolo:"La"},
+    {numero:58, nombre:"Cerio", simbolo:"Ce"},
+    {numero:59, nombre:"Praseodimio", simbolo:"Pr"},
+    {numero:60, nombre:"Neodimio", simbolo:"Nd"},
+    {numero:61, nombre:"Prometio", simbolo:"Pm"},
+    {numero:62, nombre:"Samario", simbolo:"Sm"},
+    {numero:63, nombre:"Europio", simbolo:"Eu"},
+    {numero:64, nombre:"Gadolinio", simbolo:"Gd"},
+    {numero:65, nombre:"Terbio", simbolo:"Tb"},
+    {numero:66, nombre:"Disprosio", simbolo:"Dy"},
+    {numero:67, nombre:"Holmio", simbolo:"Ho"},
+    {numero:68, nombre:"Erbio", simbolo:"Er"},
+    {numero:69, nombre:"Tulio", simbolo:"Tm"},
+    {numero:70, nombre:"Iterbio", simbolo:"Yb"},
+    {numero:71, nombre:"Lutecio", simbolo:"Lu"},
+    {numero:72, nombre:"Hafnio", simbolo:"Hf"},
+    {numero:73, nombre:"Tantalio", simbolo:"Ta"},
+    {numero:74, nombre:"Wolframio", simbolo:"W"},
+    {numero:75, nombre:"Renio", simbolo:"Re"},
+    {numero:76, nombre:"Osmio", simbolo:"Os"},
+    {numero:77, nombre:"Iridio", simbolo:"Ir"},
+    {numero:78, nombre:"Platino", simbolo:"Pt"},
+    {numero:79, nombre:"Oro", simbolo:"Au"},
+    {numero:80, nombre:"Mercurio", simbolo:"Hg"},
+    {numero:81, nombre:"Talio", simbolo:"Tl"},
+    {numero:82, nombre:"Plomo", simbolo:"Pb"},
+    {numero:83, nombre:"Bismuto", simbolo:"Bi"},
+    {numero:84, nombre:"Polonio", simbolo:"Po"},
+    {numero:85, nombre:"Ástato", simbolo:"At"},
+    {numero:86, nombre:"Radón", simbolo:"Rn"},
+    {numero:87, nombre:"Francio", simbolo:"Fr"},
+    {numero:88, nombre:"Radio", simbolo:"Ra"},
+    {numero:89, nombre:"Actinio", simbolo:"Ac"},
+    {numero:90, nombre:"Torio", simbolo:"Th"},
+    {numero:91, nombre:"Protactinio", simbolo:"Pa"},
+    {numero:92, nombre:"Uranio", simbolo:"U"},
+    {numero:93, nombre:"Neptunio", simbolo:"Np"},
+    {numero:94, nombre:"Plutonio", simbolo:"Pu"},
+    {numero:95, nombre:"Americio", simbolo:"Am"},
+    {numero:96, nombre:"Curio", simbolo:"Cm"},
+    {numero:97, nombre:"Berkelio", simbolo:"Bk"},
+    {numero:98, nombre:"Californio", simbolo:"Cf"},
+    {numero:99, nombre:"Einstenio", simbolo:"Es"},
+    {numero:100, nombre:"Fermio", simbolo:"Fm"},
+    {numero:101, nombre:"Mendelevio", simbolo:"Md"},
+    {numero:102, nombre:"Nobelio", simbolo:"No"},
+    {numero:103, nombre:"Laurencio", simbolo:"Lr"},
+    {numero:104, nombre:"Rutherfordio", simbolo:"Rf"},
+    {numero:105, nombre:"Dubnio", simbolo:"Db"},
+    {numero:106, nombre:"Seaborgio", simbolo:"Sg"},
+    {numero:107, nombre:"Bohrio", simbolo:"Bh"},
+    {numero:108, nombre:"Hasio", simbolo:"Hs"},
+    {numero:109, nombre:"Meitnerio", simbolo:"Mt"},
+    {numero:110, nombre:"Darmstadtio", simbolo:"Ds"},
+    {numero:111, nombre:"Roentgenio", simbolo:"Rg"},
+    {numero:112, nombre:"Copernicio", simbolo:"Cn"},
+    {numero:113, nombre:"Nihonio", simbolo:"Nh"},
+    {numero:114, nombre:"Flerovio", simbolo:"Fl"},
+    {numero:115, nombre:"Moscovio", simbolo:"Mc"},
+    {numero:116, nombre:"Livermorio", simbolo:"Lv"},
+    {numero:117, nombre:"Teneso", simbolo:"Ts"},
+    {numero:118, nombre:"Oganesón", simbolo:"Og"}
+];
+
+// 2. VARIABLES
 
 let orden = [];
 let actual;
 let correcta;
 let puntos = 0;
 let numeroPregunta = 0;
+
+// 3. FUNCION PARA MEZCLAR
 
 function mezclar(lista) {
 
@@ -159,6 +173,8 @@ function mezclar(lista) {
     return copia;
 }
 
+// 4. CREAR UNA NUEVA PREGUNTA
+
 function nuevaPregunta() {
 
     if (orden.length === 0) {
@@ -170,16 +186,29 @@ function nuevaPregunta() {
 
     numeroPregunta++;
 
-    let preguntarElemento = Math.random() < 0.5;
+    let tipo = Math.floor(Math.random() * 3);
 
-    correcta = preguntarElemento
-        ? actual.nombre
-        : String(actual.numero);
+    if (tipo === 0) {
 
-    document.getElementById("pregunta").textContent =
-        preguntarElemento
-        ? `¿Qué elemento tiene el número atómico ${actual.numero}?`
-        : `¿Cuál es el número atómico del ${actual.nombre}?`;
+        correcta = actual.nombre;
+
+        document.getElementById("pregunta").textContent =
+            `¿Qué elemento tiene el número atómico ${actual.numero}?`;
+
+    } else if (tipo === 1) {
+
+        correcta = actual.simbolo;
+
+        document.getElementById("pregunta").textContent =
+            `¿Cuál es el símbolo químico del ${actual.nombre}?`;
+
+    } else {
+
+        correcta = String(actual.numero);
+
+        document.getElementById("pregunta").textContent =
+            `¿Cuál es el número atómico del ${actual.nombre}?`;
+    }
 
     document.getElementById("resultado").textContent = "";
 
@@ -188,11 +217,19 @@ function nuevaPregunta() {
     document.getElementById("progreso").textContent =
         `Pregunta ${numeroPregunta} de 118`;
 
-    let distractores = elementos
-        .map((nombre, i) =>
-            preguntarElemento ? nombre : String(i + 1)
-        )
-        .filter(opcion => opcion !== correcta);
+    // 5. CREAR LAS ALTERNATIVAS
+
+    let distractores;
+
+    if (tipo === 0) {
+        distractores = elementos.map(e => e.nombre);
+    } else if (tipo === 1) {
+        distractores = elementos.map(e => e.simbolo);
+    } else {
+        distractores = elementos.map(e => String(e.numero));
+    }
+
+    distractores = distractores.filter(opcion => opcion !== correcta);
 
     let opciones = mezclar([
         correcta,
@@ -212,8 +249,11 @@ function nuevaPregunta() {
         boton.onclick = () => comprobar(opcion, boton);
 
         contenedor.appendChild(boton);
+
     });
 }
+
+// 6. COMPROBAR LA RESPUESTA
 
 function comprobar(respuesta, botonElegido) {
 
@@ -224,8 +264,10 @@ function comprobar(respuesta, botonElegido) {
         boton.disabled = true;
 
         if (boton.textContent === correcta) {
-            boton.classList.add("correcta");
+            boton.style.backgroundColor = "green";
+            boton.style.color = "white";
         }
+
     });
 
     if (respuesta === correcta) {
@@ -233,11 +275,12 @@ function comprobar(respuesta, botonElegido) {
         puntos++;
 
         document.getElementById("resultado").textContent =
-            "¡Correcto! 🎉";
+            "¡Correcto!";
 
     } else {
 
-        botonElegido.classList.add("incorrecta");
+        botonElegido.style.backgroundColor = "red";
+        botonElegido.style.color = "white";
 
         document.getElementById("resultado").textContent =
             `Incorrecto. La respuesta era ${correcta}.`;
@@ -249,10 +292,12 @@ function comprobar(respuesta, botonElegido) {
     document.getElementById("siguiente").hidden = false;
 }
 
+// 7. FINALIZAR EL QUIZ
+
 function finalizarQuiz() {
 
     document.getElementById("pregunta").textContent =
-        "¡Cuestionario terminado! 🏆";
+        "¡Cuestionario terminado!";
 
     document.getElementById("opciones").innerHTML = "";
 
@@ -260,7 +305,7 @@ function finalizarQuiz() {
         `Tu puntuación final es ${puntos} de 118.`;
 
     document.getElementById("progreso").textContent =
-        "Has completado los 118 elementos.";
+        "Completaste los 118 elementos.";
 
     document.getElementById("siguiente").textContent =
         "Volver a jugar";
@@ -269,6 +314,8 @@ function finalizarQuiz() {
 
     document.getElementById("siguiente").onclick = reiniciar;
 }
+
+// 8. REINICIAR EL QUIZ
 
 function reiniciar() {
 
@@ -282,20 +329,16 @@ function reiniciar() {
 
     document.getElementById("siguiente").onclick = nuevaPregunta;
 
-    orden = mezclar(elementos.map((nombre, i) => ({
-        nombre,
-        numero: i + 1
-    })));
+    orden = mezclar([...elementos]);
 
     nuevaPregunta();
 }
 
-document.getElementById("siguiente").onclick = nuevaPregunta;
+// 9. INICIAR EL QUIZ
 
-orden = mezclar(elementos.map((nombre, i) => ({
-    nombre,
-    numero: i + 1
-})));
+orden = mezclar([...elementos]);
+
+document.getElementById("siguiente").onclick = nuevaPregunta;
 
 nuevaPregunta();
 
